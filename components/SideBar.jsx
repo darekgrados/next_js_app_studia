@@ -1,9 +1,10 @@
 import Link from "next/link";
-import { useContext } from "react";
-import { AuthProvider } from "@/lib/auth";
+// import { useContext } from "react";
+// import { AuthProvider } from "../app/lib/AuthContext";
 
 function SideBar({ children }) {
-const { user } = useContext(AuthProvider);
+  // const { user } = useContext(AuthProvider);
+  const user = null; // Placeholder for user
 
   return (
     <>
@@ -27,10 +28,13 @@ const { user } = useContext(AuthProvider);
               <Link href='/user/login'>Login</Link>
             </li>
             <li>
-                <Link href='/user/logout'>Logout</Link>
+              <Link href='/user/register'>Register</Link>
             </li>
             <li>
-                <Link href='/user/profile'>{user}</Link>
+              <Link href='/user/logout'>Logout</Link>
+            </li>
+            <li>
+              <Link href='/user/profile'>{user ? user.email : "Profile"}</Link>
             </li>
           </ul>
         </div>
