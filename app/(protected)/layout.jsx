@@ -1,24 +1,23 @@
-import { useAuth } from "@/app/lib/firebase/AuthContext";
+"use client";
+import { useAuth } from "@/app/lib/AuthContext";
 import { useLayoutEffect } from "react";
-import { redirect } from "next/navigation";
-import { usePathname } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
+import { auth } from "@/app/lib/firebase";
 
 function Protected({ children }) {
-  const user = useAuth();
+  const { user } = useAuth();
   const returnUrl = usePathname();
 
   useLayoutEffect(() => {
+    console.dir(user?.emailVerified);
     if (!user) {
-      console.log("User not logged!");
-      redirect(`/users/login?returnUrl=${returnUrl}`);
+      console.log("user not logged!");
+      redirect(`/user/login?returnUrl=${returnUrl}`); // check path
     }
-
-    if (!user.emailVerified) {
-      console.log("User not verified!");
-      redirect("/users/verified");
+    if (user.emailVerified) {
+      redirect("/user/login"); // check path
     }
   }, []);
-
   return <>{children}</>;
 }
 
