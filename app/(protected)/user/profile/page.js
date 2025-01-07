@@ -5,43 +5,44 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 export default function UserProfile() {
-    const { user } = useAuth();
-    const auth = getAuth();
-    const [error, setError] = useState(""); // Stan do przechowywania błędów
-  
-    const { register, handleSubmit, formState: { errors } } = useForm({
-      defaultValues: {
-        displayName: user?.displayName || "",
-        email: user?.email || "",
-        photoURL: user?.photoURL || "",
-      },
-    });
-  
-    const onSubmit = (data) => {
-      updateProfile(auth.currentUser, {
-        displayName: data.displayName,
-        photoURL: data.photoURL,
+  const { user } = useAuth();
+  const auth = getAuth();
+  const [error, setError] = useState(""); // State to store errors
+
+  const { register, handleSubmit, formState: { errors } } = useForm({
+    defaultValues: {
+      displayName: user?.displayName || "",
+      email: user?.email || "",
+      photoURL: user?.photoURL || "",
+    },
+  });
+
+  const onSubmit = (data) => {
+    updateProfile(auth.currentUser, {
+      displayName: data.displayName,
+      photoURL: data.photoURL,
+    })
+      .then(() => {
+        console.log("Profile updated");
       })
-        .then(() => {
-          console.log("Profile updated");
-        })
-        .catch((error) => {
-          setError(error.message);
-        });
-    };
-  
-    return (
-      <div className="card items-center shadow-lg p-6 w-100">
-        <h1>Profil użytkownika</h1>
+      .catch((error) => {
+        setError(error.message);
+      });
+  };
+
+  return (
+    <div className="flex justify-center items-center min-h-screen bg-gray-900">
+      <div className="flex flex-col items-center bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h1 className="text-2xl font-bold mb-6">Profil użytkownika</h1>
         {error && (
-          <div className="alert alert-error">
+          <div className="alert alert-error mb-4">
             <p>{error}</p>
           </div>
         )}
-  
-        <form className="form-control" onSubmit={handleSubmit(onSubmit)}>
+
+        <form className="form-control w-full" onSubmit={handleSubmit(onSubmit)}>
           {/* Pole displayName */}
-          <label className="input input-bordered flex items-center gap-2">
+          <label className="input input-bordered flex items-center gap-2 mb-4">
             <span className="label-text">Nazwa użytkownika</span>
             <input
               type="text"
@@ -49,19 +50,17 @@ export default function UserProfile() {
               placeholder="Nazwa użytkownika"
               {...register("displayName", {
                 required: "Nazwa użytkownika jest wymagana",
-                maxLength: {
-                  value: 50,
-                  message: "Nazwa użytkownika jest za długa",
-                },
               })}
             />
           </label>
           {errors.displayName && (
             <span className="text-error">{errors.displayName.message}</span>
           )}
-  
+
+          <br />
+
           {/* Pole email (tylko do odczytu) */}
-          <label className="input input-bordered flex items-center gap-2">
+          <label className="input input-bordered flex items-center gap-2 mb-4">
             <span className="label-text">Email</span>
             <input
               type="email"
@@ -70,9 +69,11 @@ export default function UserProfile() {
               {...register("email")}
             />
           </label>
-  
+
+          <br />
+
           {/* Pole photoURL */}
-          <label className="input input-bordered flex items-center gap-2">
+          <label className="input input-bordered flex items-center gap-2 mb-4">
             <span className="label-text">Adres zdjęcia profilowego</span>
             <input
               type="text"
@@ -89,12 +90,13 @@ export default function UserProfile() {
           {errors.photoURL && (
             <span className="text-error">{errors.photoURL.message}</span>
           )}
-  
+
           {/* Przycisk zapisu */}
-          <button type="submit" className="btn btn-primary mt-4">
+          <button type="submit" className="btn btn-primary mt-4 w-full">
             Zapisz
           </button>
         </form>
       </div>
-    );
+    </div>
+  );
 }
