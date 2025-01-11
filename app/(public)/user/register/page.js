@@ -35,7 +35,21 @@ export default function RegisterForm() {
           });
       })
       .catch((error) => {
-        setRegisterError(error.message);
+        let message;
+        switch (error.code) {
+          case "auth/email-already-in-use":
+            message = "Adres email jest już zarejestrowany.";
+            break;
+          case "auth/invalid-email":
+            message = "Niepoprawny adres email.";
+            break;
+          case "auth/weak-password":
+            message = "Hasło jest zbyt słabe.";
+            break;
+          default:
+            message = "Wystąpił błąd podczas rejestracji.";
+        }
+        setRegisterError(message);
         console.dir(error);
       });
   };

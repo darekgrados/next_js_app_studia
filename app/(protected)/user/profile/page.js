@@ -7,7 +7,8 @@ import { useForm } from "react-hook-form";
 export default function UserProfile() {
   const { user } = useAuth();
   const auth = getAuth();
-  const [error, setError] = useState(""); // State to store errors
+  const [error, setError] = useState(""); // Stan błędów
+  const [success, setSuccess] = useState(false); // Stan sukcesu
 
   const { register, handleSubmit, formState: { errors } } = useForm({
     defaultValues: {
@@ -24,9 +25,19 @@ export default function UserProfile() {
     })
       .then(() => {
         console.log("Profile updated");
+        setError(""); // Wyczyść błędy
+        setSuccess(true); // Ustaw sukces
       })
       .catch((error) => {
-        setError(error.message);
+        let message;
+        switch (error.code) {
+          case "auth/requires-recent-login":
+            message = "Musisz ponownie się zalogować, aby zmienić te dane.";
+            break;
+          default:
+            message = "Wystąpił błąd podczas aktualizacji profilu.";
+        }
+        setError(message);
       });
   };
 
@@ -34,14 +45,30 @@ export default function UserProfile() {
     <div className="flex justify-center items-center min-h-screen bg-gray-900">
       <div className="flex flex-col items-center bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
         <h1 className="text-2xl font-bold mb-6">Profil użytkownika</h1>
+
         {error && (
           <div className="alert alert-error mb-4">
             <p>{error}</p>
           </div>
         )}
+        {success && (
+          <div className="alert alert-success mb-4">
+            <p>Profil został pomyślnie zaktualizowany!</p>
+          </div>
+        )}
+
+        {/* Warunkowe renderowanie zdjęcia profilowego */}
+        {user?.photoURL && (
+          <div className="flex justify-center mb-4">
+            <img
+              src={user.photoURL}
+              alt="Zdjęcie profilowe użytkownika"
+              className="rounded-full w-32 h-32 object-cover"
+            />
+          </div>
+        )}
 
         <form className="form-control w-full" onSubmit={handleSubmit(onSubmit)}>
-          {/* Pole displayName */}
           <label className="input input-bordered flex items-center gap-2 mb-4">
             <span className="label-text">Nazwa użytkownika</span>
             <input
@@ -57,9 +84,6 @@ export default function UserProfile() {
             <span className="text-error">{errors.displayName.message}</span>
           )}
 
-          <br />
-
-          {/* Pole email (tylko do odczytu) */}
           <label className="input input-bordered flex items-center gap-2 mb-4">
             <span className="label-text">Email</span>
             <input
@@ -70,9 +94,6 @@ export default function UserProfile() {
             />
           </label>
 
-          <br />
-
-          {/* Pole photoURL */}
           <label className="input input-bordered flex items-center gap-2 mb-4">
             <span className="label-text">Adres zdjęcia profilowego</span>
             <input
@@ -91,7 +112,6 @@ export default function UserProfile() {
             <span className="text-error">{errors.photoURL.message}</span>
           )}
 
-          {/* Przycisk zapisu */}
           <button type="submit" className="btn btn-primary mt-4 w-full">
             Zapisz
           </button>
