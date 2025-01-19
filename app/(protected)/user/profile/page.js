@@ -9,8 +9,8 @@ import { collection, addDoc, doc, setDoc, getDoc } from "firebase/firestore";
 export default function UserProfile() {
   const { user } = useAuth();
   const auth = getAuth();
-  const [isLoading, setIsLoading] = useState(true); // Stan do przechowywania informacji o ładowaniu
-  const [error, setError] = useState(""); // Stan do przechowywania błędów
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const {
     register,
@@ -29,12 +29,11 @@ export default function UserProfile() {
   });
 
   useEffect(() => {
-    let isMounted = true;
-    const fetchAddress = async () => {
+    const fetchAdress = async () => {
       try {
         if (user?.uid) {
           const snapshot = await getDoc(doc(db, "users", user?.uid));
-          if (snapshot.exists() && isMounted) {
+          if (snapshot.exists()) {
             const address = snapshot.data().address;
             setValue("street", address?.street || "");
             setValue("city", address?.city || "");
@@ -45,19 +44,14 @@ export default function UserProfile() {
         console.error("Error getting document:", e);
         setError("Wystąpił błąd podczas pobierania danych z Firestore.");
       } finally {
-        if (isMounted) setIsLoading(false);
+        setIsLoading(false);
       }
     };
-
-    fetchAddress();
-    return () => {
-      isMounted = false;
-    };
+    fetchAdress();
   }, [user?.uid, setValue]);
 
   const onSubmit = async (data) => {
     try {
-      //Aktualizacja profilu użytkownika w Firebase Auth
       await updateProfile(auth.currentUser, {
         displayName: data.displayName,
         photoURL: data.photoURL,
@@ -86,7 +80,7 @@ export default function UserProfile() {
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
         <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">
-          Profil użytkownika
+          Profil
         </h1>
 
         {error && (
@@ -98,9 +92,7 @@ export default function UserProfile() {
         <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
           {/* Pole displayName */}
           <div>
-            <label className="block text-gray-700 font-medium mb-2">
-              Imię
-            </label>
+            <label className="block text-gray-700 font-medium mb-2">Imię</label>
             <input
               type="text"
               className="input w-full border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -147,7 +139,9 @@ export default function UserProfile() {
             />
           </div>
           <div>
-            <label className="block text-gray-700 font-medium mb-2">City</label>
+            <label className="block text-gray-700 font-medium mb-2">
+              Miasto
+            </label>
             <input
               type="text"
               className="input w-full border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -208,7 +202,7 @@ export default function UserProfile() {
             className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 rounded-lg transition duration-200 mt-4"
             disabled={isLoading}
           >
-            {isLoading ? "Loading..." : "Zapisz"}
+            {isLoading ? "Loading..." : "Save"}
           </button>
         </form>
       </div>

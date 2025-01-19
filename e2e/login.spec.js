@@ -6,8 +6,8 @@ test('login and navigate to profile page', async ({ page }) => {
 
   // Wypełnij formularz logowania
   await page.waitForSelector('input[name="email"]');
-  await page.fill('input[name="email"]', 'test@test.test');
-  await page.fill('input[name="password"]', 'test@test.test');
+  await page.fill('input[name="email"]', 'dariusz.grados@microsoft.wsei.edu.pl');
+  await page.fill('input[name="password"]', 'dariusz.grados@microsoft.wsei.edu.pl');
 
   // Wyślij formularz
   await page.click('button[type="submit"]');

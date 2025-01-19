@@ -1,78 +1,69 @@
-'use client';
-import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+"use client";
+import { useRouter } from "next/navigation";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
 import { useAuth } from "@/app/lib/AuthContext";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useRouter } from 'next/navigation';
 
 export default function RegisterForm() {
   const { user } = useAuth();
   const router = useRouter();
   const auth = getAuth();
-
-  const [registerError, setRegisterError] = useState(""); // Przeniesienie poza warunek
-  const { register, handleSubmit } = useForm(); // Przeniesienie poza warunek
+  const [registerError, setRegisterError] = useState("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   if (user) {
-    return null; // W tym miejscu nie ma problemu, bo hooki są wywoływane powyżej
+    return null;
   }
 
   const onSubmit = (data) => {
-    console.log("clicked");
     if (data.password !== data.confirmPassword) {
-      setRegisterError("Passwords do not match!");
+      setRegisterError("Hasła nie są takie same!");
       return;
     }
 
     createUserWithEmailAndPassword(auth, data.email, data.password)
       .then((userCredential) => {
-        console.log("User registered!");
-        sendEmailVerification(auth.currentUser)
-          .then(() => {
-            console.log("Email verification sent!");
-            router.push("/user/verify");
-          });
+        sendEmailVerification(auth.currentUser).then(() => {
+          router.push("/user/verify");
+        });
       })
       .catch((error) => {
-        let message;
-        switch (error.code) {
-          case "auth/email-already-in-use":
-            message = "Adres email jest już zarejestrowany.";
-            break;
-          case "auth/invalid-email":
-            message = "Niepoprawny adres email.";
-            break;
-          case "auth/weak-password":
-            message = "Hasło jest zbyt słabe.";
-            break;
-          default:
-            message = "Wystąpił błąd podczas rejestracji.";
-        }
-        setRegisterError(message);
-        console.dir(error);
+        setRegisterError(error.message);
       });
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-900">
-      <div className="flex flex-col items-center bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-6">Rejestracja</h1>
-
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <div className="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
+        <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">
+          Rejestracja
+        </h1>
         {registerError && (
-          <div className="alert alert-error mb-4">
+          <div className="alert alert-error mb-4 bg-red-100 text-red-600 p-4 rounded">
             <p>{registerError}</p>
           </div>
         )}
-
-        <form className="form-control w-full" onSubmit={handleSubmit(onSubmit)}>
+        <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
           <div>
-            <label className="input input-bordered flex items-center gap-2 mb-4">
+            <label className="block text-gray-700 font-medium mb-1">
+              Email
+            </label>
+            <div className="relative">
               <input
                 id="email"
                 name="email"
                 type="email"
-                className="grow"
-                placeholder="Email"
+                className="input w-full border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Wprowadź email"
                 {...register("email", {
                   required: {
                     value: true,
@@ -84,48 +75,87 @@ export default function RegisterForm() {
                   },
                   pattern: {
                     value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                    message: "Niepoprawny format e-mail",
+                    message: "Niepoprawny format e-mail.",
                   },
                 })}
               />
+              {errors.email && (
+                <p className="text-sm text-red-600 mt-1">
+                  {errors.email.message}
+                </p>
+              )}
+            </div>
+          </div>
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">
+              Hasło
             </label>
-
-            <label className="input input-bordered flex items-center gap-2 mb-4">
+            <div className="relative">
               <input
                 id="password"
                 name="password"
                 type="password"
-                className="grow"
-                placeholder="Hasło"
+                className="input w-full border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Wprowadź hasło"
                 {...register("password", {
-                  required: {
-                    value: true,
-                    message: "Musisz podać hasło!",
+                  required: "Hasło jest wymagane!",
+                  maxLength: {
+                    value: 40,
+                    message: "Hasło jest za długie!",
                   },
                 })}
               />
+              {errors.password && (
+                <p className="text-sm text-red-600 mt-1">
+                  {errors.password.message}
+                </p>
+              )}
+            </div>
+          </div>
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">
+              Potwierdź hasło
             </label>
-
-            <label className="input input-bordered flex items-center gap-2 mb-4">
+            <div className="relative">
               <input
-                id="confirmPassword"
                 name="confirmPassword"
                 type="password"
-                className="grow"
-                placeholder="Powtórz hasło"
+                className="input w-full border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Potwierdź hasło"
                 {...register("confirmPassword", {
-                  required: {
-                    value: true,
-                    message: "Musisz potwierdzić hasło!",
+                  required: "Potwierdzenie hasła jest wymagane!",
+                  maxLength: {
+                    value: 40,
+                    message: "Hasło jest za długie!",
                   },
                 })}
               />
-            </label>
+              {errors.confirmPassword && (
+                <p className="text-sm text-red-600 mt-1">
+                  {errors.confirmPassword.message}
+                </p>
+              )}
+            </div>
           </div>
-          <button type="submit" className="btn btn-primary w-full py-2">
-            Zarejstruj
+
+          <button
+            type="submit"
+            className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 rounded-lg transition duration-200"
+          >
+            Zarejestruj się
           </button>
         </form>
+        {/* <div className="text-center mt-4 text-sm text-gray-500">
+          <p>
+            Masz już konto?{" "}
+            <a
+              href="/user/login"
+              className="text-blue-500 hover:underline font-medium"
+            >
+              Zaloguj się
+            </a>
+          </p>
+        </div> */}
       </div>
     </div>
   );

@@ -2,7 +2,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import SideBar from "@/components/SideBar";
 import { AuthProvider } from "./lib/AuthContext";
-
+import { Suspense } from "react";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -26,9 +26,11 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-      <AuthProvider>
-        <SideBar> {children}</SideBar>
-      </AuthProvider>
+        <AuthProvider>
+          <div className="flex flex-col h-screen bg-gray-100">
+            <SideBar> {children}</SideBar>
+          </div>
+        </AuthProvider>
       </body>
     </html>
   );

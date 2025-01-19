@@ -1,22 +1,18 @@
 "use client";
 import { useAuth } from "@/app/lib/AuthContext";
-import { useLayoutEffect } from "react";
+import { useEffect } from "react";
 import { redirect, usePathname } from "next/navigation";
+import { auth } from "@/app/lib/firebase";
 
 function Protected({ children }) {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const returnUrl = usePathname();
 
-  useLayoutEffect(() => {
-    console.dir(user?.emailVerified);
-    if (!user) {
-      console.log("user not logged!");
+  useEffect(() => {
+    if (!loading && !user) {
       redirect(`/user/login?returnUrl=${returnUrl}`);
     }
-    if (user?.emailVerified) {
-      redirect("/user/login");
-    }
-  }, [user, returnUrl]);
+  }, [loading, user, returnUrl]);
   return <>{children}</>;
 }
 

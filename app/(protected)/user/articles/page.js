@@ -16,7 +16,7 @@ export default function ArticlesPage() {
         if (user?.uid) {
           const q = query(
             collection(db, "articles"),
-            where("ownerId", "==", user.uid) // Pobranie artykułów zalogowanego użytkownika
+            where("ownerId", "==", user.uid) 
           );
           const querySnapshot = await getDocs(q);
           const articlesData = querySnapshot.docs.map(doc => ({
