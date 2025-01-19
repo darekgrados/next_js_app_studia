@@ -38,6 +38,7 @@ function LoginForm() {
     return (
         <div className="flex justify-center items-center min-h-screen bg-gray-900">
             <div className="flex flex-col items-center bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+                <h1 className="text-2xl font-bold mb-6">Zaloguj się</h1> {/* Nagłówek wymagany przez test */}
                 <form className="form-control w-full" onSubmit={handleSubmit(onSubmit)}>
                     {firebaseError && (
                         <div className="alert alert-error mb-4">
@@ -58,9 +59,9 @@ function LoginForm() {
                             <input
                                 id="email"
                                 name="email"
-                                type="text"
+                                type="email"
                                 className="grow"
-                                placeholder="Email"
+                                placeholder="Wprowadź email" 
                                 {...register("email", {
                                     required: {
                                         value: true,
@@ -83,7 +84,7 @@ function LoginForm() {
                                 name="password"
                                 type="password"
                                 className="grow"
-                                placeholder="Hasło"
+                                placeholder="Wprowadź hasło" 
                                 {...register("password", {
                                     required: {
                                         value: true,
