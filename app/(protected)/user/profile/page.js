@@ -86,7 +86,7 @@ export default function UserProfile() {
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
         <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">
-          User Profile
+          Profil użytkownika
         </h1>
 
         {error && (
@@ -99,7 +99,7 @@ export default function UserProfile() {
           {/* Pole displayName */}
           <div>
             <label className="block text-gray-700 font-medium mb-2">
-              Display Name
+              Imię
             </label>
             <input
               type="text"
@@ -136,7 +136,7 @@ export default function UserProfile() {
           {/* Pola address */}
           <div>
             <label className="block text-gray-700 font-medium mb-2">
-              Street
+              Ulica
             </label>
             <input
               type="text"
@@ -158,7 +158,7 @@ export default function UserProfile() {
           </div>
           <div>
             <label className="block text-gray-700 font-medium mb-2">
-              Zip Code
+              Kod pocztowy
             </label>
             <input
               type="text"
@@ -182,7 +182,7 @@ export default function UserProfile() {
           {/* Pole photoURL */}
           <div>
             <label className="block text-gray-700 font-medium mb-2">
-              Profile Photo
+              Profilowe
             </label>
             <input
               type="text"
@@ -208,7 +208,7 @@ export default function UserProfile() {
             className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 rounded-lg transition duration-200 mt-4"
             disabled={isLoading}
           >
-            {isLoading ? "Loading..." : "Save"}
+            {isLoading ? "Loading..." : "Zapisz"}
           </button>
         </form>
       </div>
