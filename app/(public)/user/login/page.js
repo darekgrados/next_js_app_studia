@@ -6,7 +6,7 @@ import {
 } from "firebase/auth";
 import { auth } from "@/app/lib/firebase";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useState, Suspense} from "react";
 import { useForm } from "react-hook-form";
 
 function LoginForm() {
@@ -103,4 +103,11 @@ function LoginForm() {
     );
 }
 
-export default LoginForm;
+export default function LoginPage() {
+    return (
+      <Suspense fallback={<div>Ładowanie...</div>}>
+        <LoginForm />
+      </Suspense>
+    );
+  }
+  
