@@ -18,7 +18,7 @@ export default function Logout() {
   }
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+    <div className="flex justify-center items-center min-h-screen bg-gray-800">
       <div className="bg-white shadow-lg rounded-lg p-8 max-w-sm w-full">
         <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
           Czy na pewno chcesz się wylogować?
